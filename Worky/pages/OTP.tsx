@@ -25,7 +25,7 @@ const OTP = ({ navigation }: any) => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "api-key": process.env.EXPO_PUBLIC_API_KEY,
+            "api-key": String(process.env.EXPO_PUBLIC_API_KEY ?? ""),
             "otp-code": otp, // Pass OTP in the header
           },
         }

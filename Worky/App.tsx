@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { NavigationContainer } from "@react-navigation/native";
+// import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { SafeAreaView, StyleSheet } from "react-native";
 import OTP from "./pages/OTP";
 import MainApp from "./pages/MainApp";
 
+// Make sure OTP and MainApp do NOT contain their own NavigationContainer
 const Stack = createStackNavigator();
 
 const App: React.FC = () => {
@@ -30,6 +32,7 @@ const App: React.FC = () => {
   }
 
   return (
+    <SafeAreaView style={styles.container}>
       <Stack.Navigator initialRouteName={isFirstLaunch ? "OTP" : "MainApp"}>
         {/* OTP Screen */}
         <Stack.Screen
@@ -44,7 +47,15 @@ const App: React.FC = () => {
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
+    </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+});
 
 export default App;
