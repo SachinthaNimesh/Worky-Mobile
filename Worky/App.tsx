@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 // import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -10,37 +10,45 @@ import MainApp from "./pages/MainApp";
 const Stack = createStackNavigator();
 
 const App: React.FC = () => {
-  const [isFirstLaunch, setIsFirstLaunch] = useState<boolean | null>(null);
+  const [studentId, setStudentId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const navigationRef = useRef<any>(null);
 
   useEffect(() => {
-    const checkFirstLaunch = async () => {
-      const hasLaunched = await AsyncStorage.getItem("hasLaunched");
-      if (hasLaunched === null) {
-        await AsyncStorage.setItem("hasLaunched", "true");
-        setIsFirstLaunch(true);
-      } else {
-        setIsFirstLaunch(false);
-      }
+    const checkStudentId = async () => {
+      const storedId = await AsyncStorage.getItem("student_id");
+      setStudentId(storedId);
+      setLoading(false);
     };
-
-    checkFirstLaunch();
+    checkStudentId();
   }, []);
 
-  if (isFirstLaunch === null) {
-    // Optionally, you can return a loading screen here
+  const handleOtpSuccess = async (id: string) => {
+    await AsyncStorage.setItem("student_id", id);
+    setStudentId(id);
+    navigationRef.current?.reset({
+      index: 0,
+      routes: [{ name: "MainApp" }],
+    });
+  };
+
+  if (loading) {
     return null;
   }
 
   return (
     <SafeAreaView style={styles.container}>
-      <Stack.Navigator initialRouteName={isFirstLaunch ? "OTP" : "MainApp"}>
-        {/* OTP Screen */}
+      <Stack.Navigator
+        initialRouteName={studentId ? "MainApp" : "OTP"}
+        // @ts-ignore
+        ref={navigationRef}
+      >
         <Stack.Screen
           name="OTP"
-          component={OTP}
           options={{ headerShown: false }}
-        />
-        {/* Main App Screen */}
+        >
+          {(props) => <OTP {...props} onOtpSuccess={handleOtpSuccess} />}
+        </Stack.Screen>
         <Stack.Screen
           name="MainApp"
           component={MainApp}

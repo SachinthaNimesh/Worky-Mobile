@@ -26,7 +26,7 @@ const OTP = ({ navigation }: any) => {
           headers: {
             "Content-Type": "application/json",
             "api-key": String(process.env.EXPO_PUBLIC_API_KEY ?? ""),
-            "otp-code": otp, // Pass OTP in the header
+            "otp-code": otp, 
           },
         }
       );
@@ -47,7 +47,7 @@ const OTP = ({ navigation }: any) => {
 
       const data = await response.json();
 
-      const { success, student_id, message } = data; // Adjusted to match backend response
+      const { success, student_id, message } = data; 
 
       if (!success) {
         throw new Error(message || "Invalid response from server");
@@ -78,14 +78,14 @@ const OTP = ({ navigation }: any) => {
   };
 
   return (
-    <SafeAreaView style={styles.safeContainer}>
+    <View style={styles.background}>
       <View style={styles.container}>
         <Text style={styles.title}>Enter OTP</Text>
         <TextInput
           style={styles.input}
           placeholder="Enter OTP"
           value={otp}
-          onChangeText={setOtp} // Get otp as a string
+          onChangeText={setOtp}
           keyboardType="numeric"
           placeholderTextColor="#aaa"
         />
@@ -93,14 +93,19 @@ const OTP = ({ navigation }: any) => {
           <Text style={styles.buttonText}>Submit</Text>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  safeContainer: {
-    flex: 1,
-    backgroundColor: "#f9f9f9",
+  background: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    zIndex: -1,
+    backgroundColor: "#667eea",
   },
   container: {
     flex: 1,
